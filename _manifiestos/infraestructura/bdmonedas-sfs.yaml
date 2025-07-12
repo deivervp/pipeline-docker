@@ -14,11 +14,13 @@ spec:
         app: bdmonedas
     spec:
       containers:
-        - name: bdmonedas  
+        - name: bdmonedas  # <-- Aquí empieza la definición del único contenedor
           image: postgres:17
           ports:
-          - containersPort: 5432
-        - env:
+            - containersPort: 5432
+          env: # <-- Esta sección debe estar indentada al mismo nivel que 'ports', 'image', 'name'
+          - name: PGPORT # <--POSTGRES_DB
+            value: monedas
           - name: POSTGRES_DB
             value: monedas
           - name: POSTGRES_USER
@@ -26,9 +28,9 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: bdmonedas-secretos-tt
+                name: bdmonedas-secretos
                 key: BDMONEDAS_PASSWORD
-          volumeMounts:
+          volumeMounts: # <-- Esta sección también debe estar indentada al mismo nivel
             - name: storage-bdmonedas
               mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
@@ -39,6 +41,3 @@ spec:
         resources:
           requests:
             storage: 1Gi
-
-
-
